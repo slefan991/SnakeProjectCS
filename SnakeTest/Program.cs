@@ -1,15 +1,13 @@
-﻿List<int> snakeTrackY = new List<int> { };
-List<int> snakeTrackX = new List<int> { };
+﻿List<int> snakeTrackY = [];
+List<int> snakeTrackX = [];
 
-int snakeHeadPosY = 3; // Y = Up/Down
-int snakeHeadPosX = 1; // X = Left/Right
+int snakeHeadPosY = 5; // Y = Up/Down
+int snakeHeadPosX = 3; // X = Left/Right
 
-int scoreBoxY = 0;
-int scoreBoxX = 0;
-
-int borderBoxY = 3;
-int borderBoxX = 0;
 bool keyPressed = false;
+
+// Top left (X/Y), top right, bottom left, bottom right
+int[] playableArea = {5, 2, 5, 128, 28, 2, 128, 28 };
 
 int speedMs = 200;
 
@@ -18,7 +16,6 @@ int axis = 2;
 
 string snakeBody = "▓";
 string snakeFood = "@";
-string borderChar = "║";
 int availableFood = 0;
 
 int foodLocationX = 0;
@@ -31,23 +28,42 @@ int windowHeight = Console.WindowHeight;
 
 Console.CursorVisible = false;
 
+//Console Width: 120, Console Height: 30
+
+//Draws scoreboard border top
+Console.SetCursorPosition(0, 0);
+Console.WriteLine("╔" + new string('═', windowWidth - 2) + "╗");
+Console.SetCursorPosition(0, 1);
+Console.WriteLine("║" + new string(' ', windowWidth - 2) + "║");
+Console.SetCursorPosition(0, 2);
+Console.WriteLine("║" + new string(' ', windowWidth - 2) + "║");
+
+//Draws top border
+Console.SetCursorPosition(0,3);
+Console.WriteLine("╠" + new string('═', windowWidth -2) + "╣");
+
+//Draws side borders
+for(int i = 4; i < windowHeight - 1; i++)
+{
+    Console.SetCursorPosition(0, i);
+    Console.Write("║" + new string(' ', windowWidth -2) + "║");
+    
+}
+
+//Draws bottom border
+Console.SetCursorPosition(0, windowHeight -1);
+Console.Write("╚" + new string('═', windowWidth -2) + "╝");
+
+
 while (true)
 {
     //Die when you hit the wall
-    if (snakeHeadPosX == windowWidth - 1 || snakeHeadPosY == windowHeight - 1 || snakeHeadPosY < 0 || snakeHeadPosX < 0)
+    //Weird behavior? Have to use weird numbers. Something weird about the math.
+    //Console Width: 120, Console Height: 30
+    if (snakeHeadPosY == 3 || snakeHeadPosY == 30 || snakeHeadPosX == -1 || snakeHeadPosX == 118)
     {
         Console.Write("You lost!");
         break;
-    }
-
-    if(borderBoxX < windowWidth)
-    {
-        //Not working as intended, fixing later
-        //Draw borders
-
-        //Console.SetCursorPosition(borderBoxX, borderBoxY);
-        //Console.Write("║");
-        //borderBoxY++;
     }
 
     //Draw Scoreboard, add better UI later
@@ -58,8 +74,8 @@ while (true)
     if (availableFood == 0)
     {
         Random rand = new Random();
-        foodLocationX = rand.Next(0, windowWidth);
-        foodLocationY = rand.Next(0, windowHeight);
+        foodLocationY = rand.Next(4, 29);
+        foodLocationX = rand.Next(-1, 118);
 
         availableFood++;
     }
@@ -123,26 +139,22 @@ while (true)
         var k = Console.ReadKey(true);
         if (k.Key == ConsoleKey.S)
         {
-            keyPressed = true;
             axis = 4;
             keyPressed = false;
             continue;
         }
         else if (k.Key == ConsoleKey.W)
         {
-            keyPressed = true;
             axis = 3;
             keyPressed = false;
         }
         else if (k.Key == ConsoleKey.A)
         {
-            keyPressed = true;
             axis = 1;
             keyPressed = false;
         }
         else if (k.Key == ConsoleKey.D)
         {
-            keyPressed = true;
             axis = 2;
             keyPressed = false;
         }
