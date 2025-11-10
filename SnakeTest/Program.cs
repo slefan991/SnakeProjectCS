@@ -1,4 +1,6 @@
-﻿List<int> snakeTrackY = [];
+﻿using SnakeTest.Render;
+
+List<int> snakeTrackY = [];
 List<int> snakeTrackX = [];
 
 int snakeHeadPosY = 5; // Y = Up/Down
@@ -9,7 +11,7 @@ bool keyPressed = false;
 // Top left (X/Y), top right, bottom left, bottom right
 int[] playableArea = {5, 2, 5, 128, 28, 2, 128, 28 };
 
-int speedMs = 200;
+int speedMs = 50;
 
 // axis 1 = -x, axis 2 = +x, axis 3 = -y, axis 4 = +y
 int axis = 2;
@@ -28,31 +30,9 @@ int windowHeight = Console.WindowHeight;
 
 Console.CursorVisible = false;
 
-//Console Width: 120, Console Height: 30
+RenderHandler render = new RenderHandler();
 
-//Draws scoreboard border top
-Console.SetCursorPosition(0, 0);
-Console.WriteLine("╔" + new string('═', windowWidth - 2) + "╗");
-Console.SetCursorPosition(0, 1);
-Console.WriteLine("║" + new string(' ', windowWidth - 2) + "║");
-Console.SetCursorPosition(0, 2);
-Console.WriteLine("║" + new string(' ', windowWidth - 2) + "║");
-
-//Draws top border
-Console.SetCursorPosition(0,3);
-Console.WriteLine("╠" + new string('═', windowWidth -2) + "╣");
-
-//Draws side borders
-for(int i = 4; i < windowHeight - 1; i++)
-{
-    Console.SetCursorPosition(0, i);
-    Console.Write("║" + new string(' ', windowWidth -2) + "║");
-    
-}
-
-//Draws bottom border
-Console.SetCursorPosition(0, windowHeight -1);
-Console.Write("╚" + new string('═', windowWidth -2) + "╝");
+render.GameRender();
 
 
 while (true)
@@ -102,12 +82,17 @@ while (true)
     
     if(snakeTrackX.Count > snakeLength)
     {
+        int tailX = snakeTrackX[0];
+        int tailY = snakeTrackY[0];
+
         snakeTrackX.RemoveAt(0);
         snakeTrackY.RemoveAt(0);
         
-        Console.SetCursorPosition(snakeTrackX[0], snakeTrackY[0]);
+        Console.SetCursorPosition(tailX, tailY);
         Console.Write(" ");
     }
+
+    Console.SetCursorPosition(snakeHeadPosX, snakeHeadPosY);
 
     Console.Write(snakeBody);
 
